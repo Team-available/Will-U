@@ -106,9 +106,29 @@
     var postId = [[${postId}]];
     console.log(postId);
 
+    // ========== 게시글 정보 불러오기 ==========
+    $(document).ready(function () {
+        $.ajax({
+            url: `/api/posts/${postId}`,
+            method: 'GET',
+            success: function (response) {
+                $("#title").val(response.title);
+                $("#content").val(response.content);
+                $("#category").val(response.category);
+                $("#promiseTime").val(response.promiseTime);
+                $("#promiseArea").val(response.promiseArea);
+                $("#maxnum").val(response.maxnum);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+
+    // ========== 게시글 수정 ==========
     function updatePost() {
         $.ajax({
-            url: `/api/posts/${postId}`, // 컨트롤러 url 작성 (postId를 적절한 값으로 설정)
+            url: `/api/posts/${postId}`,
             method: 'PUT',
             contentType: "application/json",
             data: JSON.stringify({
