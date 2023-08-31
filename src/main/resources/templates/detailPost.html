@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <title>게시글 상세 조회</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .post-view {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .post {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .profile {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+<div class="post-view">
+    <div class="post" id="postbox">
+        <h1 id="title">게시글 제목</h1>
+        <div id="content">게시글 내용</div>
+        <div id="category">카테고리</div>
+        <div id="datetime">약속시간</div>
+        <div id="location">악속 장소</div>
+        <div id="maxnum">모집인원:</div>
+    </div>
+
+    <div class="profile">
+        <img src="https://spartacodingclub.kr/_next/image?url=%2Fv5%2Ficons%2Flogged-in-rtan.png&w=1920&q=100
+    " alt="출저:스파르타로그인창">
+        <p>내이름이여기에붙어요<br>
+            내자기소개가여기에요<br>
+            #프로필 #관심사 #적는곳</p>
+    </div>
+
+    <div class="buttons">
+        <button id="join">신청하기</button>
+        <button id="back">돌아가기</button>
+        <button id="edit" onclick="updatePost()">수정하기</button>
+        <button id="delete" onclick="confirmAndDelete()">삭제하기</button>
+    </div>
+</div>
+
+</body>
+<script th:inline="javascript">
+
+    var post = [[${post}]];//타임리프-post.id에 사용
+    // console.log(post);
+
+    //==========게시글 내용 가져오기==========
+    $(document).ready(function () {
+        $.ajax({
+            url: `/api/posts/${post.id}`, // postId를 URL에 연결
+            type: 'GET',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': document.cookie // 클라이언트 쿠키 값을 전달
+            },
+
+            success: function (response) {
+                console.log(response);
+
+                var postbox = $('#postbox');
+                postbox.empty();
+
+                var postDiv = `
+                    <div class="posts">
+                   <h1>${response.title}</h1>
+                    <p>${response.content}</p>
+                    <p>관심사: ${response.category}</p>
+                    <p>약속 시간: ${response.promiseTime}</p>
+                    <p>약속 장소: ${response.promiseArea}</p>
+                    <p>모집 인원: ${response.maxnum}</p>
+                    </div>
+                `;
+                postbox.append(postDiv);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+
+    // ============ 게시글 수정 ===============
+    function updatePost() {
+        window.location.href = "/posts/update/" + post.id;
+    }
+
+    // ============ 게시글 삭제 ===============
+    function confirmAndDelete() {
+        if (confirm('정말로 삭제하시겠습니까?')) {
+            deletePost();
+        }
+    }
+
+    function deletePost() {
+        $.ajax({
+            url: `/api/posts/${post.id}`, // postId를 URL에 연결
+            type: 'DELETE',
+            success: function (response) {
+                alert('게시글이 삭제되었습니다.');
+                window.location.href = "/"; // 삭제 후 메인 페이지로 이동
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+                alert('게시글 삭제에 실패하였습니다.');
+            }
+        });
+    }
+
+    // ============ 돌아가기 ===============
+    document.getElementById("back").addEventListener("click", function () {
+        history.back(); // 뒤로가기 기능 실행
+    });
+
+</script>
+</html>

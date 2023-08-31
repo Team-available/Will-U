@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <title>게시글 작성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .post-form {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: grid;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea,
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+<div class="post-form">
+    <h1>게시글 작성</h1>
+    <form id="post-form">
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="content">내용</label>
+        <textarea id="content" name="content" required></textarea>
+
+        <label for="category">관심사</label>
+        <input type="text" id="category" name="category">
+
+        <label for="promiseTime">약속 시간</label>
+        <input type="datetime-local" id="promiseTime" name="promiseTime">
+
+        <label for="promiseArea">약속 장소</label>
+        <input type="text" id="promiseArea" name="promiseArea">
+
+        <label for="maxnum">모임 인원</label>
+        <input type="number" id="maxnum" name="maxnum" min="2">
+
+        <div class="buttons">
+            <button type="submit" onclick="createPost()">작성</button>
+            <button type="button" id="back">취소</button>
+        </div>
+    </form>
+</div>
+</body>
+
+<script>
+    function createPost() {
+        let authCookie = Cookies.get("Authorization");
+        $.ajax({
+            url: `/api/post`, // 컨트롤러 url 작성
+            method: 'POST',
+            headers: {
+                'Authorization': authCookie
+            },
+            contentType: "application/json",
+            data: JSON.stringify({
+                title: $("#title").val(),
+                content: $("#content").val(),
+                category: $("#category").val(),
+                promiseTime: $("#promiseTime").val(),
+                promiseArea: $("#promiseArea").val(),
+                maxnum: $("#maxnum").val()
+            }),
+            success: function (response) {
+                alert("글 작성 성공")
+                window.location.href = "/index";
+            },
+            error: function (xhr, status, error) {
+                alert("글 작성 실패")
+                console.log(xhr);
+            }
+        });
+    }
+
+    document.getElementById("back").addEventListener("click", function () {
+        history.back(); // 뒤로가기 기능 실행
+    });
+</script>
+</html>

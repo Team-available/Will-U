@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <title>willu</title>
+    <STYLE>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header, nav, main, footer {
+            padding: 20px;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        a:hover {
+            color: #f00;
+        }
+
+    </STYLE>
+</head>
+<body>
+<header>
+    <h1>할래?</h1>
+</header>
+<nav>
+    <ul>
+        <li><a href="/users/user-login">로그인</a></li>
+        <li><a href="/post/create">글 작성</a></li>
+    </ul>
+</nav>
+<main>
+    <div class="list" id="post-list">
+        <div id="posts">
+            같이 밥 먹으실분
+        </div>
+    </div>
+</main>
+
+</body>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: 'http://localhost:8080/api/posts', // 스프링 컨트롤러 api 작성
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (response) { //postResponce값 가져옴
+                var postsContainer = $('#posts');
+                postsContainer.empty();
+
+                response.forEach(function (post) {
+                    var postLink = `<a href="/posts/${post.id}">${post.title}</a>`;
+                    var postDiv = `<div>${postLink}</div>`;
+                    postsContainer.append(postDiv);
+                    console.log(post.id);
+
+                });
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+
+</script>
+</html>
