@@ -113,28 +113,16 @@ public class NotificationService {
 
     private Notification createNotification(User publisher, User receiver, NotificationType notificationType,
                                             String content, String title, Long postId) {
-        Notification notification;
-        if (Objects.equals(notificationType, NotificationType.JOIN_REQUEST)) {
-            notification = Notification.builder()
-                    .receiver(receiver)
-                    .publisher(publisher)
-                    .notificationType(notificationType)
-                    .content(content)
-                    .title(title)
-                    .postId(postId)
-                    .isRead(false)
-                    .build();
-        } else {
-            notification = Notification.builder()
-                    .receiver(receiver)
-                    .publisher(publisher)
-                    .notificationType(notificationType)
-                    .content(content)
-                    .title(title)
-                    .postId(postId)
-                    .isRead(true)
-                    .build();
-        }
+        Notification notification = Notification.builder()
+                .receiver(receiver)
+                .publisher(publisher)
+                .notificationType(notificationType)
+                .content(content)
+                .title(title)
+                .postId(postId)
+                .isRead(!Objects.equals(notificationType, NotificationType.JOIN_REQUEST))
+                .build();
+
         return notification;
     }
 
