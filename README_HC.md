@@ -54,7 +54,7 @@
 - SSE를 활용한 실시간 알림기능 구현
 - AWS RDS DB 환경 구축 (AZ+Replica)에 따른 부하 분산을 위한 Read/Write 분기
 - AWS 서버 환경 구축(EC2 + ELB + Route53)
-
+- ++ Javascript, JQuery, Ajax 등을 활용한 프론트엔드 개발 (기여도 전체의 30%)
 ---
 
 ## 주요 구현 기능 설명
